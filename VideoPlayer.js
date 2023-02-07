@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Video from 'react-native-video';
 import {
   TouchableWithoutFeedback,
@@ -14,6 +14,7 @@ import {
   Text,
 } from 'react-native';
 import padStart from 'lodash/padStart';
+import normalize from 'rn-normalized';
 
 export default class VideoPlayer extends Component {
   static defaultProps = {
@@ -31,8 +32,6 @@ export default class VideoPlayer extends Component {
     volume: 1,
     title: '',
     rate: 1,
-    showTimeRemaining: true,
-    showHours: false,
   };
 
   constructor(props) {
@@ -53,8 +52,7 @@ export default class VideoPlayer extends Component {
 
       isFullscreen:
         this.props.isFullScreen || this.props.resizeMode === 'cover' || false,
-      showTimeRemaining: this.props.showTimeRemaining,
-      showHours: this.props.showHours,
+      showTimeRemaining: true,
       volumeTrackWidth: 0,
       volumeFillWidth: 0,
       seekerFillWidth: 0,
@@ -162,7 +160,7 @@ export default class VideoPlayer extends Component {
   }
 
   componentDidUpdate = prevProps => {
-    const {isFullscreen} = this.props;
+    const { isFullscreen } = this.props;
 
     if (prevProps.isFullscreen !== isFullscreen) {
       this.setState({
@@ -271,7 +269,7 @@ export default class VideoPlayer extends Component {
    * Either close the video or go to a
    * new page.
    */
-  _onEnd() {}
+  _onEnd() { }
 
   /**
    * Set the error state to true which then
@@ -532,6 +530,7 @@ export default class VideoPlayer extends Component {
    * navigator prop by default.
    */
   _onBack() {
+    console.log("Helo Data")
     if (this.props.navigator && this.props.navigator.pop) {
       this.props.navigator.pop();
     } else {
@@ -565,22 +564,10 @@ export default class VideoPlayer extends Component {
     const symbol = this.state.showRemainingTime ? '-' : '';
     time = Math.min(Math.max(time, 0), this.state.duration);
 
-    if (!this.state.showHours) {
-      const formattedMinutes = padStart(Math.floor(time / 60).toFixed(0), 2, 0);
-      const formattedSeconds = padStart(Math.floor(time % 60).toFixed(0), 2, 0);
-
-      return `${symbol}${formattedMinutes}:${formattedSeconds}`;
-    }
-
-    const formattedHours = padStart(Math.floor(time / 3600).toFixed(0), 2, 0);
-    const formattedMinutes = padStart(
-      (Math.floor(time / 60) % 60).toFixed(0),
-      2,
-      0,
-    );
+    const formattedMinutes = padStart(Math.floor(time / 60).toFixed(0), 2, 0);
     const formattedSeconds = padStart(Math.floor(time % 60).toFixed(0), 2, 0);
 
-    return `${symbol}${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    return `${symbol}${formattedMinutes}:${formattedSeconds}`;
   }
 
   /**
@@ -923,11 +910,14 @@ export default class VideoPlayer extends Component {
    * wrapper and styling.
    */
   renderControl(children, callback, style = {}) {
+    // console.log("Hllooeoooe")
     return (
       <TouchableHighlight
         underlayColor="transparent"
         activeOpacity={0.3}
         onPress={() => {
+          console.log("Hllooeoooe")
+
           this.resetControlTimeout();
           callback();
         }}
@@ -1005,13 +995,13 @@ export default class VideoPlayer extends Component {
     return (
       <View style={styles.volume.container}>
         <View
-          style={[styles.volume.fill, {width: this.state.volumeFillWidth}]}
+          style={[styles.volume.fill, { width: this.state.volumeFillWidth }]}
         />
         <View
-          style={[styles.volume.track, {width: this.state.volumeTrackWidth}]}
+          style={[styles.volume.track, { width: this.state.volumeTrackWidth }]}
         />
         <View
-          style={[styles.volume.handle, {left: this.state.volumePosition}]}
+          style={[styles.volume.handle, { left: this.state.volumePosition }]}
           {...this.player.volumePanResponder.panHandlers}>
           <Image
             style={styles.volume.icon}
@@ -1103,12 +1093,12 @@ export default class VideoPlayer extends Component {
           />
         </View>
         <View
-          style={[styles.seekbar.handle, {left: this.state.seekerPosition}]}
+          style={[styles.seekbar.handle, { left: this.state.seekerPosition }]}
           pointerEvents={'none'}>
           <View
             style={[
               styles.seekbar.circle,
-              {backgroundColor: this.props.seekColor || '#FFF'},
+              { backgroundColor: this.props.seekColor || '#FFF' },
             ]}
             pointerEvents={'none'}
           />
@@ -1328,13 +1318,14 @@ const styles = {
       justifyContent: 'center',
     },
     top: {
-      flex: 1,
+      flex: 2,
       alignItems: 'stretch',
       justifyContent: 'flex-start',
     },
     bottom: {
       alignItems: 'stretch',
-      flex: 2,
+      flex: 14,
+      // marginRight: normalize(40),
       justifyContent: 'flex-end',
     },
     topControlGroup: {
