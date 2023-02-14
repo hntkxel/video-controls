@@ -980,7 +980,7 @@ export default class VideoPlayer extends Component {
   renderBack() {
     return this.renderControl(
       <Image
-        source={require('./assets/img/back.png')}
+        source={require('./assets/img/close.png')}
         style={styles.controls.back}
       />,
       this.events.onBack,
